@@ -32,31 +32,39 @@ classdef metaheuristicnet
      
       function out = train(obj, x, t)
           disp('train to implement');
+          obj = configure(obj, x, t);
           obj.currentTrainX = x;
           obj.currentTrainT = t;
-          best = StartAlgorithm(obj.trainFcn, @obj.fitness);
-          setWeightsFromIndividual(obj, best);
+          individual = DataConversionUtils.individualFromWeights(obj);
+          best = StartAlgorithm(obj.trainFcn, @obj.fitness, individual);
+          obj = setWeightsFromIndividual(obj, best);
           out = obj;
       end
+      
+      function out = evaluate(obj,x)
+         out = obj.net_handle(x);
+      end
+     
   end
   
   methods (Access=private) %custom private functions
       function ft = fitness(obj, xn, N, pd)
+          ft = [];
           for i=1:N
               individual = xn(i,:);
-              
-              setWeightsFromIndividual(obj, individual);
+              obj = setWeightsFromIndividual(obj, individual);
               out = obj.net_handle(obj.currentTrainX);
-              
               ft = [ft perform(obj, obj.currentTrainT, out)];
           end
       end
       
-      function setWeightsFromIndividual(obj, individual)
+      function obj = setWeightsFromIndividual(obj, individual)
           weights = DataConversionUtils.weightsFromIndividual(obj, individual);
-          obj.IW = weights.IW;
-          obj.LW = weights.LW;
-          obj.b = weights.b;
+          
+          obj.net_handle.IW = weights.IW;
+          obj.net_handle.LW = weights.LW;
+          obj.net_handle.b = weights.b;
+          %obj.net_handle.LW{2,1}
       end
   end
    
@@ -105,6 +113,10 @@ classdef metaheuristicnet
       
       function [perf] = perform(obj, t, y)
           perf = mse(obj.net_handle, t, y);
+      end
+      
+      function obj = configure(obj, t, y)
+          obj.net_handle = configure(obj.net_handle, t, y);
       end
    end
    
