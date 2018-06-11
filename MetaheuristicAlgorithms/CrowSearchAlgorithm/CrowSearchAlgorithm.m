@@ -1,5 +1,4 @@
 
-
 % -------------------------------------------------
 % Citation details:
 % Alireza Askarzadeh, Anovel metaheuristic method for solving constrained
@@ -18,53 +17,57 @@
 % may lead to slightly different results.
 % -------------------------------------------------
 
-format long; close all; clear all; clc
+function BestPosition = CrowSearchAlgorithm(params, fitness)
 
-pd=10; % Problem dimension (number of decision variables)
-N=20; % Flock (population) size
-AP=0.1; % Awareness probability
-fl=2; % Flight length (fl)
+    N = params{1};
+    max_iter = params{2};
+    lower = params{3};
+    upper = params{4};
+    dim = params{5};
 
-[x l u]=init(N,pd); % Function for initialization
+    AP=0.1; % Awareness probability
+    fl=2; % Flight length (fl)
+    
+    x=init(N,dim, lower, upper); % Function for initialization
 
-xn=x;
-ft=fitness(xn,N,pd); % Function for fitness evaluation
+    xn=x;
+    ft=fitness(xn,N,dim); % Function for fitness evaluation
 
-mem=x; % Memory initialization
-fit_mem=ft; % Fitness of memory positions
+    mem=x; % Memory initialization
+    fit_mem=ft; % Fitness of memory positions
 
-tmax=5000; % Maximum number of iterations (itermax)
-for t=1:tmax
+    for t=1:max_iter
 
-    num=ceil(N*rand(1,N)); % Generation of random candidate crows for following (chasing)
-    for i=1:N
-        if rand>AP
-            xnew(i,:)= x(i,:)+fl*rand*(mem(num(i),:)-x(i,:)); % Generation of a new position for crow i (state 1)
-        else
-            for j=1:pd
-                xnew(i,j)=l-(l-u)*rand; % Generation of a new position for crow i (state 2)
+        num=ceil(N*rand(1,N)); % Generation of random candidate crows for following (chasing)
+        for i=1:N
+            if rand>AP
+                xnew(i,:)= x(i,:)+fl*rand*(mem(num(i),:)-x(i,:)); % Generation of a new position for crow i (state 1)
+            else
+                for j=1:dim
+                    xnew(i,j)=lower-(lower-upper)*rand; % Generation of a new position for crow i (state 2)
+                end
             end
         end
-    end
 
-    xn=xnew;
-    ft=fitness(xn,N,pd); % Function for fitness evaluation of new solutions
+        xn=xnew;
+        ft=fitness(xn,N,dim); % Function for fitness evaluation of new solutions
 
-    for i=1:N % Update position and memory
-        if xnew(i,:)>=l & xnew(i,:)<=u
-            x(i,:)=xnew(i,:); % Update position
-            if ft(i)<fit_mem(i)
-                mem(i,:)=xnew(i,:); % Update memory
-                fit_mem(i)=ft(i);
+        for i=1:N % Update position and memory
+            if xnew(i,:)>=lower & xnew(i,:)<=upper
+                x(i,:)=xnew(i,:); % Update position
+                if ft(i)<fit_mem(i)
+                    mem(i,:)=xnew(i,:); % Update memory
+                    fit_mem(i)=ft(i);
+                end
             end
         end
+
+        ffit(t)=min(fit_mem); % Best found value until iteration t
     end
 
-    ffit(t)=min(fit_mem); % Best found value until iteration t
-    min(fit_mem)
+    ngbest=find(fit_mem == min(fit_mem));
+    BestPosition=mem(ngbest(1),:); % Solution of the problem
+
 end
-
-ngbest=find(fit_mem== min(fit_mem));
-g_best=mem(ngbest(1),:); % Solutin of the problem
 
 
