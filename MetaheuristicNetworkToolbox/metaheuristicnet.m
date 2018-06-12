@@ -7,6 +7,10 @@ classdef metaheuristicnet
       net_handle;
       currentTrainX;
       currentTrainT;
+      
+%       TODO: przechowywanie najlepszego przystosowania
+      bestWeights;
+      bestError;
   end
   
   properties (Dependent) %feedforwardnet prop wrappers
@@ -38,7 +42,7 @@ classdef metaheuristicnet
           obj.currentTrainX = x;
           obj.currentTrainT = t;
           individual = DataConversionUtils.individualFromWeights(obj);
-          best = StartAlgorithm(obj.trainFcn, @obj.fitness, @obj.stopCondition, individual);
+          best = StartAlgorithm(obj.trainFcn, individual, @obj.fitness, @obj.stopCondition);
           obj = setWeightsFromIndividual(obj, best);
           out = obj;
       end
@@ -60,8 +64,8 @@ classdef metaheuristicnet
           end
       end
       
-      function stop = stopCondition(obj, best, iter)
-          obj = setWeightsFromIndividual(obj, best);
+      function stop = stopCondition(obj, bestIndividual, iter)
+          obj = setWeightsFromIndividual(obj, bestIndividual);
           out = obj.net_handle(obj.currentTrainX);
           perform(obj, obj.currentTrainT, out);
           

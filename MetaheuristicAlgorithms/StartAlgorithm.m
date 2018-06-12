@@ -1,8 +1,8 @@
-function [best] = StartAlgorithm(algorithm, fitnessFunction, stopConditionFunction, currentIndividual)
+function [best] = StartAlgorithm(algorithm, individual, fitnessFunction, stopConditionFunction)
     agents=5; % Number of search agents
     lb = -1;
-    dim = length(currentIndividual);
     ub = 1;
+    dim = length(individual);
     iters=100; % Maximum numbef of iterations
     params = {agents, iters, lb, ub, dim, stopConditionFunction};
     switch algorithm
