@@ -33,7 +33,7 @@ function BestPosition = CuttleFishAlgorithm(params, fitness)
     v2 = -1;
 
     x = init(N, dim, lower, upper);
-    fit = fitness(x, N, dim);
+    fit = fitness(x);
     minfit = min(fit);
     prevMinfit = minfit;
     BestIdx = find(fit == minfit);
@@ -56,7 +56,7 @@ function BestPosition = CuttleFishAlgorithm(params, fitness)
     for t=1:max_iter
         %calculate the average value of the best solution
         % !!!! which average ? ordinary arithmetic ? !!!!
-        AVBest = 0;%mean(Best);
+        AVBest = 0;%mean(BestPosition);
 
         % Case 1 & 2
         G = groupsC{1};
@@ -71,7 +71,7 @@ function BestPosition = CuttleFishAlgorithm(params, fitness)
             newcell = reflection + visibility;
             x(cIdx, :) = newcell;
 
-            fit = fitness(newcell, 1, dim);
+            fit = fitness(newcell);
             if fit < minfit
                 minfit = fit;
                 BestPosition = x(cIdx, :);
@@ -97,7 +97,7 @@ function BestPosition = CuttleFishAlgorithm(params, fitness)
             newcell = reflection + visibility;
             x(prevGroupSize + cIdx, :) = newcell;
 
-            fit = fitness(newcell, 1, dim);
+            fit = fitness(newcell);
             if fit < minfit
                 minfit = fit;
                 BestPosition = x(prevGroupSize + cIdx, :);
@@ -123,7 +123,7 @@ function BestPosition = CuttleFishAlgorithm(params, fitness)
             newcell = reflection + visibility;
             x(prevGroupSize + cIdx, :) = newcell;
 
-            fit = fitness(newcell, 1, dim);
+            fit = fitness(newcell);
             if fit < minfit
                 minfit = fit;
                 BestPosition = x(prevGroupSize + cIdx, :);
@@ -145,7 +145,7 @@ function BestPosition = CuttleFishAlgorithm(params, fitness)
             end
             x(prevGroupSize + cIdx, :) = newcell;
 
-            fit = fitness(newcell, 1, dim);
+            fit = fitness(newcell);
             if fit < minfit
                 minfit = fit;
                 BestPosition = x(prevGroupSize + cIdx, :);
@@ -157,7 +157,7 @@ function BestPosition = CuttleFishAlgorithm(params, fitness)
             end
         end
         if prevMinfit ~= minfit
-    %         disp(strcat(num2str(t), ':    ', num2str(minfit, '%10.15e')))
+             %disp(strcat(num2str(t), ':    ', num2str(minfit, '%10.15e')))
             prevMinfit = minfit;
         end
 

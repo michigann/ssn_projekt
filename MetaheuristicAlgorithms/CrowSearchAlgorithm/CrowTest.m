@@ -9,3 +9,4 @@ iters=1000; % Maximum numbef of iterations
 params = {agents, iters, lb, ub, dim};
 
 best_pos = CrowSearchAlgorithm(params, @fitness);
+rastriginsfcn(best_pos)

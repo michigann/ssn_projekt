@@ -31,7 +31,7 @@ function BestPosition = CrowSearchAlgorithm(params, fitness)
     x=init(N,dim, lower, upper); % Function for initialization
 
     xn=x;
-    ft=fitness(xn,N,dim); % Function for fitness evaluation
+    ft=fitness(xn); % Function for fitness evaluation
 
     mem=x; % Memory initialization
     fit_mem=ft; % Fitness of memory positions
@@ -50,7 +50,7 @@ function BestPosition = CrowSearchAlgorithm(params, fitness)
         end
 
         xn=xnew;
-        ft=fitness(xn,N,dim); % Function for fitness evaluation of new solutions
+        ft=fitness(xn); % Function for fitness evaluation of new solutions
 
         for i=1:N % Update position and memory
             if xnew(i,:)>=lower & xnew(i,:)<=upper
