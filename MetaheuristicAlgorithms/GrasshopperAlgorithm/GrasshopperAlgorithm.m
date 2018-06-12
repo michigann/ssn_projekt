@@ -7,6 +7,7 @@ function BestPosition = GrasshopperAlgorithm(params, fitness)
     lower = params{3};
     upper = params{4};
     dim = params{5};
+    stopConditionFunction = params{6};
         
     flag=0;
 
@@ -81,6 +82,20 @@ function BestPosition = GrasshopperAlgorithm(params, fitness)
             end
         end
 
+%         TODO: to w ramach testów, poprawê zostawiam dla Krzysia ;)
+%         zmiana na jak¹œ bardziej przystêpn¹ formê wywo³anai i
+%         sprawdzenie czy wgl jest jakiœ dodatkowy warunek - tak ¿eby
+%         ³adnie to wygl¹da³o i by³o bardziej uniwersalne
+        if (flag==1)
+            tmpBest = BestPosition(1:dim-1);
+        else
+            tmpBest = BestPosition;
+        end
+        
+        if (stopConditionFunction(tmpBest, l-1))
+           break; 
+        end
+        
         l = l + 1;
     end
 

@@ -1,17 +1,17 @@
-function [best] = StartAlgorithm(algorithm, fitness, currentIndividual)
+function [best] = StartAlgorithm(algorithm, fitnessFunction, stopConditionFunction, currentIndividual)
     agents=5; % Number of search agents
     lb = -1;
     dim = length(currentIndividual);
     ub = 1;
     iters=100; % Maximum numbef of iterations
-    params = {agents, iters, lb, ub, dim};
+    params = {agents, iters, lb, ub, dim, stopConditionFunction};
     switch algorithm
         case 'cuttlefish'
-            best = CuttleFishAlgorithm(params, fitness);
+            best = CuttleFishAlgorithm(params, fitnessFunction);
         case 'crow'
-            best = CrowSearchAlgorithm(params, fitness);
+            best = CrowSearchAlgorithm(params, fitnessFunction);
         case 'grasshopper'
-            best = GrasshopperAlgorithm(params, fitness);
+            best = GrasshopperAlgorithm(params, fitnessFunction);
         otherwise  
             best = test(params, fitness);
     end
