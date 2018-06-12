@@ -1,3 +1,7 @@
 function d = distance(a,b)
-    d=sqrt((a(1)-b(1))^2+(a(2)-b(2))^2);
+    sum = 0;
+    for dim=1:length(a)
+        sum = sum + (a(dim) - b(dim)) ^ 2;
+    end
+    d=sqrt(sum);
 end
