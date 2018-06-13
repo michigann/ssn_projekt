@@ -3,7 +3,7 @@ function [best] = StartAlgorithm(algorithm, individual, fitnessFunction, stopCon
     lb = -1;
     ub = 1;
     dim = length(individual);
-    iters=100; % Maximum numbef of iterations
+    iters=9999999999; % Maximum numbef of iterations
     params = {agents, iters, lb, ub, dim, stopConditionFunction};
     switch algorithm
         case 'cuttlefish'

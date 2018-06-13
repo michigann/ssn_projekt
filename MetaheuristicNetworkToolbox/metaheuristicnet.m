@@ -1,12 +1,18 @@
-classdef metaheuristicnet
+classdef metaheuristicnet < handle
    properties
       trainFcn;
+      trainParam;
+      divideParam;
    end
    
   properties (Access = private)
       net_handle;
+      
+      tr;
       currentTrainX;
       currentTrainT;
+      trainPerformance;
+      testPerformance;
       
 %       TODO: przechowywanie najlepszego przystosowania
       bestWeights;
@@ -16,12 +22,12 @@ classdef metaheuristicnet
   properties (Dependent) %feedforwardnet prop wrappers
       %Neural Network
       name;
-      userdata;
-      trainParam;      
+      userdata;     
       
       %dimensions
       numInputs;
       numLayers;
+      
       
       LW;
       IW;
@@ -34,6 +40,11 @@ classdef metaheuristicnet
          net.net_handle = feedforwardnet(hiddenSizes);
          net.trainFcn = trainFcn;
          net.name = 'Metaheuristic Neural Network';
+         net.trainParam.epochs = 100;
+         net.trainParam.goal = 0;
+         net.trainParam.show = 1;
+         net.divideParam.trainRatio = 0.8;
+         net.divideParam.testRatio = 0.2;
       end  
      
       function out = train(obj, x, t)
@@ -41,10 +52,34 @@ classdef metaheuristicnet
           obj = configure(obj, x, t);
           obj.currentTrainX = x;
           obj.currentTrainT = t;
+          
+          obj.net_handle.divideParam.testRatio = 0;
+          obj.net_handle.divideParam.testRatio = obj.divideParam.trainRatio;
+          obj.net_handle.divideParam.trainRatio = obj.divideParam.trainRatio;
+          
+          obj.net_handle.trainParam.epochs = 0;
+          obj.net_handle.trainParam.showWindow = 0;
+          
+          [~, trr] = train(obj.net_handle, x, t);
+          obj.tr = trr;
+          
+          obj.trainPerformance = zeros(1, obj.trainParam.epochs);
+          obj.testPerformance = zeros(1, obj.trainParam.epochs);
+          
           individual = DataConversionUtils.individualFromWeights(obj);
           best = StartAlgorithm(obj.trainFcn, individual, @obj.fitness, @obj.stopCondition);
           obj = setWeightsFromIndividual(obj, best);
           out = obj;
+      end
+      
+      function [x, t] = getTrainSet(obj)
+          x = obj.currentTrainX(:, obj.tr.trainInd);
+          t = obj.currentTrainT(:, obj.tr.trainInd);
+      end
+      
+      function [x, t] = getTestSet(obj)
+          x = obj.currentTrainX(:, obj.tr.testInd);
+          t = obj.currentTrainT(:, obj.tr.testInd);
       end
           
   end
@@ -66,15 +101,37 @@ classdef metaheuristicnet
       
       function stop = stopCondition(obj, bestIndividual, iter)
           obj = setWeightsFromIndividual(obj, bestIndividual);
-          out = obj.net_handle(obj.currentTrainX);
-          perform(obj, obj.currentTrainT, out);
           
-          iter
+          [x, t] = obj.getTrainSet();
+          out = obj.net_handle(x);
+          trainPerf = perform(obj, t, out);
           
-          if (iter < obj.net_handle.trainParam.epochs)
-              stop = 0;
-          else
+          [x, t] = obj.getTestSet();
+          out = obj.net_handle(x);
+          testPerf = perform(obj, t, out);
+                   
+          if obj.trainParam.show
+              obj.trainPerformance(iter) = trainPerf;
+              obj.testPerformance(iter) = testPerf;
+              epochs = 1:iter;
+              
+              clf;
+              hold on;
+              perfs = obj.trainPerformance(1:iter);
+              plot(epochs, perfs);
+              perfs = obj.testPerformance(1:iter);
+              plot(epochs, perfs);
+              hold off;
+              
+              legend('train performance', 'test performance');
+              drawnow;
+          end
+          
+          if (iter >= obj.trainParam.epochs || ...
+                  trainPerf <= obj.trainParam.goal)
               stop = 1;
+          else
+              stop = 0;
           end
       end
       
@@ -129,14 +186,6 @@ classdef metaheuristicnet
        
        function out = get.b(obj)
            out = obj.net_handle.b;
-       end
-       
-       function out = get.trainParam(obj)
-          out = obj.net_handle.trainParam; 
-       end
-       
-       function obj = set.trainParam(obj, trainParam)
-          obj.net_handle.trainParam = trainParam; 
        end
        
    end
