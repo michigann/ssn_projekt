@@ -26,6 +26,7 @@ function BestPosition = CuttleFishAlgorithm(params, fitness)
     lower = params{3};
     upper = params{4};
     dim = params{5};
+    stopConditionFunction = params{6};
 
     r1 = 1;
     r2 = -0.5;
@@ -161,6 +162,10 @@ function BestPosition = CuttleFishAlgorithm(params, fitness)
             prevMinfit = minfit;
         end
 
+        if (stopConditionFunction(BestPosition, t))
+           break; 
+        end
+        
     end
     % disp(strcat('Best: ', num2str(minfit, '%10.15e')))
 

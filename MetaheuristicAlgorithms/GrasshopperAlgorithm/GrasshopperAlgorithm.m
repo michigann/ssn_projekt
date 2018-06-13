@@ -60,10 +60,10 @@ function BestPosition = GrasshopperAlgorithm(params, fobj)
             end
         end
 
-        if (stopConditionFunction(BestFitness, l-1))
+        if (stopConditionFunction(BestPosition, l-1))
            break; 
         end
-
+        
         l = l + 1;
     
     end

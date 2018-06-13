@@ -24,6 +24,7 @@ function BestPosition = CrowSearchAlgorithm(params, fitness)
     lower = params{3};
     upper = params{4};
     dim = params{5};
+    stopConditionFunction = params{6};
 
     AP=0.1; % Awareness probability
     fl=2; % Flight length (fl)
@@ -63,6 +64,12 @@ function BestPosition = CrowSearchAlgorithm(params, fitness)
         end
 
         ffit(t)=min(fit_mem); % Best found value until iteration t
+        ngbest=find(fit_mem == ffit(t));
+        BestPosition=mem(ngbest(1),:); % Best position until iteration t
+        
+        if (stopConditionFunction(BestPosition, t))
+           break; 
+        end
     end
 
     ngbest=find(fit_mem == min(fit_mem));
