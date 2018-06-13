@@ -73,13 +73,11 @@ classdef metaheuristicnet < handle
       end
       
       function [x, t] = getTrainSet(obj)
-          obj.tr.trainInd
           x = obj.currentTrainX(:, obj.tr.trainInd);
           t = obj.currentTrainT(:, obj.tr.trainInd);
       end
       
       function [x, t] = getTestSet(obj)
-          obj.tr.testInd
           x = obj.currentTrainX(:, obj.tr.testInd);
           t = obj.currentTrainT(:, obj.tr.testInd);
       end
