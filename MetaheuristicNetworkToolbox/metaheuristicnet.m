@@ -53,8 +53,8 @@ classdef metaheuristicnet < handle
           obj.currentTrainX = x;
           obj.currentTrainT = t;
           
-          obj.net_handle.divideParam.testRatio = 0;
-          obj.net_handle.divideParam.testRatio = obj.divideParam.trainRatio;
+          obj.net_handle.divideParam.valRatio = 0;
+          obj.net_handle.divideParam.testRatio = obj.divideParam.testRatio;
           obj.net_handle.divideParam.trainRatio = obj.divideParam.trainRatio;
           
           obj.net_handle.trainParam.epochs = 0;
@@ -73,11 +73,13 @@ classdef metaheuristicnet < handle
       end
       
       function [x, t] = getTrainSet(obj)
+          obj.tr.trainInd
           x = obj.currentTrainX(:, obj.tr.trainInd);
           t = obj.currentTrainT(:, obj.tr.trainInd);
       end
       
       function [x, t] = getTestSet(obj)
+          obj.tr.testInd
           x = obj.currentTrainX(:, obj.tr.testInd);
           t = obj.currentTrainT(:, obj.tr.testInd);
       end
@@ -108,8 +110,8 @@ classdef metaheuristicnet < handle
           
           [x, t] = obj.getTestSet();
           out = obj.net_handle(x);
-          testPerf = perform(obj, t, out);
-                   
+          testPerf = perform(obj, t, out);  
+          
           if obj.trainParam.show
               obj.trainPerformance(iter) = trainPerf;
               obj.testPerformance(iter) = testPerf;
