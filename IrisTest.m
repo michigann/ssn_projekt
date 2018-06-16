@@ -21,7 +21,7 @@ for i=1:length(irisTargets)
 end
 
 % Run network
-net = metaheuristicnet(5, 'cuttlefish');
+net = metaheuristicnet(5, 'grasshopper');
 net.trainParam.epochs = 200;
 net = net.train(irisInputs, targets);
 

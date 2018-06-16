@@ -1,5 +1,5 @@
 function [best] = StartAlgorithm(algorithm, individual, fitnessFunction, stopConditionFunction)
-    agents=5; % Number of search agents
+    agents=50; % Number of search agents
     lb = -1;
     ub = 1;
     dim = length(individual);
