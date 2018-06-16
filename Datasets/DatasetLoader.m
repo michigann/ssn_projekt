@@ -18,8 +18,8 @@ function [X, T] = DatasetLoader(dataset)
             [X, T] = loadGlassDataset();
         case 'yeast'
             [X, T] = loadYeastDataset();
-        case 'wine'
-            [X, T] = loadWineDataset();    
+        case 'parkinson'
+            [X, T] = loadParkinsonDataset();  
     end
 end
 
@@ -165,5 +165,12 @@ function [X, T] = loadYeastDataset()
     T = T';
 end
 
-
+function [X, T] = loadParkinsonDataset()
+    load Datasets\Parkinson\train_data.txt;
+    load Datasets\Parkinson\test_data.txt;
+    train = [train_data(:, 1:27) train_data(:, 29)];
+    data = [test_data; train];
+    X = data(:, 1:27)';
+    T = data(:, 28)';
+end
 
