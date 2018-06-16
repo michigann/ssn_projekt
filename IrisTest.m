@@ -22,7 +22,7 @@ end
 
 % Run network
 net = metaheuristicnet(5, 'cuttlefish');
-net.trainParam.epochs = 200;
+net.trainParam.epochs = 10;
 net = net.train(irisInputs, targets);
 
 [X, T] = net.getTrainSet();
@@ -33,20 +33,10 @@ result_u = round(net.sim(X));
 result = round(net.sim(testing));
 
 trainingAmount = length(X);
-trainingCorrect = 0;
-for i=1:trainingAmount
-    if result_u(1, i) == T(1, i) && result_u(2, i) == T(2, i)
-       trainingCorrect = trainingCorrect + 1;
-    end
-end
+trainingCorrect = PerformanceUtils.getDifferences(result_u, T);
 
 testingAmount = length(testing);
-testingCorrect = 0;
-for i=1:testingAmount
-    if result(1, i) == expected(1, i) && result(2, i) == expected(2, i)
-       testingCorrect = testingCorrect + 1;
-    end
-end
+testingCorrect = PerformanceUtils.getDifferences(result, expected);
 
 mse_u = net.perform(T, result_u)
 mse_t = net.perform(expected, result)
@@ -56,3 +46,4 @@ trainingMismatchPercentage = (trainingMismatchNumber / trainingAmount) * 100
 
 testingMismatchNumber = testingAmount - testingCorrect
 testingMismatchPercentage = (testingMismatchNumber / testingAmount) * 100
+
