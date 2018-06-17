@@ -63,6 +63,7 @@ function [X, T] = loadArrhythmiaDataset()
     T = targets;
 end
 
+%[2]
 function [X, T] = loadCongressionalVotingsDataset()
     f = fopen('Datasets/CongressionalVotings/house-votes-84.data');
     
@@ -75,15 +76,15 @@ function [X, T] = loadCongressionalVotingsDataset()
         tline = strrep(tline,',n',',0');
         tline = strrep(tline,',?',',0.5');
         tline = strsplit(tline, ',');
-       
-        X = [X strcmp(tline{1}, 'democrat')];
-       
+      
+        T = [T strcmp(tline{1}, 'democrat')];
+        
         tline = tline(2:end);
         tline = cellfun(@str2num, tline);
-        T = [T; tline];  
+        X = [X; tline];  
         tline = fgetl(f);
     end
-    T = T';
+    X = X';
     fclose(f);
 end
 
@@ -102,23 +103,23 @@ function [X, T] = loadOvariancancerDataset()
     T = targets;
 end
 
+%[20 5]
 function [X, T] = loadGlassDataset()
     load Datasets/Glass/glass.data;
 
     inputs = glass(:, 2:size(glass, 2)-1)';
     Y = glass(:, size(glass, 2));
-    binDim = length(dec2bin(max(Y)));
-    Y = dec2bin(Y, binDim);
-    targets = zeros(size(Y, 1), binDim);
-    for i=1:size(targets, 1)
-        targets(i, : ) = str2num(Y(i, : )')';
+    matrixSize = max(Y);
+    targets = zeros(matrixSize, size(Y, 1));
+    for i=1:size(Y, 1)
+       targets(Y(i), i) = 1; 
     end
-    targets = targets';
     
     X = inputs;
     T = targets;
 end
 
+%[30]
 function [X, T] = loadYeastDataset()
     f = fopen('Datasets/Yeast/yeast.data');
     
@@ -165,6 +166,7 @@ function [X, T] = loadYeastDataset()
     T = T';
 end
 
+%[4]
 function [X, T] = loadParkinsonDataset()
     load Datasets\Parkinson\train_data.txt;
     load Datasets\Parkinson\test_data.txt;

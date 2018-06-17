@@ -81,6 +81,18 @@ classdef DataConversionUtils
             end
         end
         
+        function class = convertNetworkResultToClass(result)
+            if size(result, 1) > 1
+                class = zeros(size(result));
+                for l=1:size(result, 2)
+                    [~, maxIndex] = max(result(:, l));
+                    class(maxIndex, l) = 1;
+                end
+            else
+                class = round(result);
+            end     
+        end
+        
     end
     
 end
