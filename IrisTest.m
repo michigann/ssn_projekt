@@ -3,48 +3,38 @@ clc;
 
 metaInit;
 
-load iris_dataset.mat;
-
-firstClassCode = [0;0];
-secondClassCode = [0;1];
-thirdClassCode = [1;1];
-
-targets = zeros(2, length(irisTargets));
-for i=1:length(irisTargets)
-    if irisTargets(1, i) == 1
-        targets(:, i) = firstClassCode;
-    elseif irisTargets(2, i) == 1
-        targets(:, i) = secondClassCode;
-    elseif irisTargets(3, i) == 1
-        targets(:, i) = thirdClassCode;
-    end
-end
+[inputs, targets] = DatasetLoader('ionosphere');
 
 % Run network
-net = metaheuristicnet(5, 'grasshopper');
+hiddenSizes = 4;
+algorithm = 'grasshopper';
+net = metaheuristicnet(hiddenSizes, algorithm);
 net.trainParam.epochs = 200;
 
-net = net.train(irisInputs, targets);
+net = net.train(inputs, targets);
 
 [X, T] = net.getTrainSet();
 [testing, expected] = net.getTestSet();
 
 % Check results
-result_u = round(net.sim(X));
-result = round(net.sim(testing));
+result_u_exact = net.sim(X);
+result_u = PerformanceUtils.convertResult(result_u_exact);
+
+result_exact = net.sim(testing);
+result = PerformanceUtils.convertResult(result_exact);
 
 trainingAmount = length(X);
-trainingCorrect = PerformanceUtils.getDifferences(result_u, T);
+trainingMismatchNumber = PerformanceUtils.getDifferences(result_u, T);
 
 testingAmount = length(testing);
-testingCorrect = PerformanceUtils.getDifferences(result, expected);
+testingMismatchNumber = PerformanceUtils.getDifferences(result, expected);
 
-mse_u = net.perform(T, result_u)
-mse_t = net.perform(expected, result)
+mse_u = net.perform(T, result_u);
+mse_t = net.perform(expected, result);
 
-trainingMismatchNumber = trainingAmount - trainingCorrect
-trainingMismatchPercentage = (trainingMismatchNumber / trainingAmount) * 100
-
-testingMismatchNumber = testingAmount - testingCorrect
-testingMismatchPercentage = (testingMismatchNumber / testingAmount) * 100
+fprintf('For %s\n', algorithm);
+trainingMismatchPercentage = (trainingMismatchNumber / trainingAmount) * 100;
+fprintf('mismatch(u) = %d / %f %%, mse(u) = %f\n', trainingMismatchNumber, trainingMismatchPercentage, mse_u);
+testingMismatchPercentage = (testingMismatchNumber / testingAmount) * 100;
+fprintf('mismatch(t) = %d / %f %%, mse(t) = %f\n', testingMismatchNumber, testingMismatchPercentage, mse_t);
 

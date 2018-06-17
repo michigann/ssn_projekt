@@ -36,10 +36,17 @@ end
 %[4]
 function [X, T] = loadIonosphereDataset()
     load ionosphere;
-    t = char(Y)';
-    t = strrep(t,'g','1');
-    t = strrep(t,'b','0'); 
-    T = str2num(t');
+    
+    X = X';
+    T = [];
+    for i=1:size(Y, 1)
+        if Y{i} == 'g'
+            T = [T; [1 0]];
+        elseif Y{i} == 'b'
+            T = [T; [0 1]];
+        end
+    end
+    T = T';
 end
 
 %[10]

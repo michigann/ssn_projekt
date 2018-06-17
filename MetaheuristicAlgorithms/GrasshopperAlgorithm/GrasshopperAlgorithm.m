@@ -7,8 +7,9 @@ function BestPosition = GrasshopperAlgorithm(params, fobj)
     upper = params{4};
     dim = params{5};
     stopConditionFunction = params{6};
-
+    
     cMax=1;
+%     cMin = 0.001;
     cMin=0.00001;
 
     %Initialize the population of grasshoppers
@@ -29,7 +30,7 @@ function BestPosition = GrasshopperAlgorithm(params, fobj)
     while l<max_iter+1
         
         c=cMax-l*((cMax-cMin)/max_iter); % Eq. (2.8) in the paper
-
+        
         positions = GrassHopperPositions;
         for i=1:N
             S_i=zeros(1,dim);
