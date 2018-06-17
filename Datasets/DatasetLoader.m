@@ -12,8 +12,6 @@ function [X, T] = DatasetLoader(dataset)
             [X, T] = loadArrhythmiaDataset();
         case 'votes'
             [X, T] = loadCongressionalVotingsDataset();
-        case 'ovariancancer'
-            [X, T] = loadOvariancancerDataset();
         case 'glass'
             [X, T] = loadGlassDataset();
         case 'yeast'
@@ -161,6 +159,7 @@ function [X, T] = loadParkinsonDataset()
     T = data(:, 28)';
 end
 
+%[10]
 function [X, T] = loadPhishingData()
     load Datasets\Phishing\PhishingData.txt 
     X = PhishingData(:, 1:9)';
