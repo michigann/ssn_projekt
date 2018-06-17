@@ -3,6 +3,7 @@ classdef metaheuristicnet < handle
       trainFcn;
       trainParam;
       divideParam;
+      performFcn;
    end
    
   properties (Access = private)
@@ -197,7 +198,12 @@ classdef metaheuristicnet < handle
       end
       
       function [perf] = perform(obj, t, y)
-          perf = mse(obj.net_handle, t, y);
+          if obj.performFcn == "mse"
+              perf = mse(obj.net_handle, t, y);
+          elseif obj.performFcn == "classification"
+              res = DataConversionUtils.convertNetworkResultToClass(y);
+              perf = PerformanceUtils.getDifferences(res, t)/size(t,2);
+          end
       end
       
       function obj = configure(obj, t, y)

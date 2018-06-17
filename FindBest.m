@@ -1,3 +1,5 @@
+clear;
+
 metaInit;
 
 neurons = { 2 4 6 8 10 12 14 18 20 [2 2] [4 2] [6 2] [8 2] [10 2] [12 2] [14 2] [18 2] [20 2]};
@@ -6,6 +8,10 @@ datasets = { 'votes', 'ovariancancer', 'glass', 'yeast', 'parkinson' };
 
 datasets = {'phishing'};
 neurons = { 20 30 40 };
+
+
+datasets = {'phishing'};
+neurons = {[10]};
 
 for i=1:length(datasets)
     dataset = datasets{i};
@@ -22,7 +28,7 @@ for i=1:length(datasets)
        train_wrong = 0;
        train_all = 0;
        
-       for k=1:5
+       for k=1:1
            net = feedforwardnet(n);
            net.trainParam.showWindow = 1;
            net.trainParam.epochs = 200;
@@ -31,11 +37,11 @@ for i=1:length(datasets)
            net.divideParam.valRatio = 0.15;
            
            [net, tr] = train(net, X, T);
-           
-
+          
            x_train = X(:, tr.trainInd);
            t_train = T(:, tr.trainInd);
            r_train = net(x_train);
+           mse_u = perform(net, r_train, t_train);
            
            r_train = DataConversionUtils.convertNetworkResultToClass(r_train);
            train_wrong = train_wrong + PerformanceUtils.getDifferences(r_train, t_train);
@@ -45,7 +51,8 @@ for i=1:length(datasets)
            x_test = X(:, tr.testInd);
            t_test = T(:, tr.testInd);
            r_test = net(x_test);
-
+           mse_t = perform(net, r_test, t_test);
+           
            r_test = DataConversionUtils.convertNetworkResultToClass(r_test);
            
            test_wrong = test_wrong + PerformanceUtils.getDifferences(r_test, t_test);
@@ -59,6 +66,9 @@ for i=1:length(datasets)
        n
        test_perf
        train_perf
+       mse_u
+       mse_t
+       
 
     end
 end

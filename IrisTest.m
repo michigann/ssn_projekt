@@ -3,34 +3,35 @@ clc;
 
 metaInit;
 
-[inputs, targets] = DatasetLoader('ionosphere');
+[inputs, targets] = DatasetLoader('yeast');
 
 % Run network
-hiddenSizes = 4;
+hiddenSizes = 30;
 algorithm = 'grasshopper';
-net = metaheuristicnet(hiddenSizes, algorithm);
+net = feedforwardnet(hiddenSizes, algorithm);
 net.trainParam.epochs = 200;
+net.performFcn = 'mse';
 
-net = net.train(inputs, targets);
+net = train(net, inputs, targets);
 
 [X, T] = net.getTrainSet();
 [testing, expected] = net.getTestSet();
 
 % Check results
 result_u_exact = net.sim(X);
-result_u = PerformanceUtils.convertResult(result_u_exact);
+result_u = DataConversionUtils.convertNetworkResultToClass(result_u_exact);
 
 result_exact = net.sim(testing);
-result = PerformanceUtils.convertResult(result_exact);
+result = DataConversionUtils.convertNetworkResultToClass(result_exact);
 
-trainingAmount = length(X);
+trainingAmount = size(X,2);
 trainingMismatchNumber = PerformanceUtils.getDifferences(result_u, T);
 
-testingAmount = length(testing);
+testingAmount = size(testing,2);
 testingMismatchNumber = PerformanceUtils.getDifferences(result, expected);
 
-mse_u = net.perform(T, result_u);
-mse_t = net.perform(expected, result);
+mse_u = net.perform(T, result_u_exact);
+mse_t = net.perform(expected, result_exact);
 
 fprintf('For %s\n', algorithm);
 trainingMismatchPercentage = (trainingMismatchNumber / trainingAmount) * 100;
