@@ -88,21 +88,6 @@ function [X, T] = loadCongressionalVotingsDataset()
     fclose(f);
 end
 
-function [X, T] = loadOvariancancerDataset()
-    load ovariancancer.mat;
-    inputs = obs';
-    targets = zeros(1, size(grp, 1));
-    for i=1:size(grp, 1)
-       if grp{i} == 'Cancer'
-           targets(i) = 1;
-       else
-           targets(i) = 0;
-       end
-    end
-    X = inputs;
-    T = targets;
-end
-
 %[20 5]
 function [X, T] = loadGlassDataset()
     load Datasets/Glass/glass.data;
