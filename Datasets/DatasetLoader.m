@@ -20,6 +20,8 @@ function [X, T] = DatasetLoader(dataset)
             [X, T] = loadYeastDataset();
         case 'parkinson'
             [X, T] = loadParkinsonDataset();  
+        case 'phishing'
+            [X, T] = loadPhishingData();
     end
 end
 
@@ -52,14 +54,12 @@ end
 %[8]
 function [X, T] = loadArrhythmiaDataset()
     load arrhythmia;
-    X = X';
-    binDim = length(dec2bin(max(Y)));
-    Y = dec2bin(Y, binDim);
-    targets = zeros(size(Y, 1), binDim);
-    for i=1:size(targets, 1)
-        targets(i, : ) = str2num(Y(i, : )')';
+    X = [X(:, 1:13) X(:, 16:size(X, 2))]';
+    matrixSize = max(Y);
+    targets = zeros(matrixSize, size(Y, 1));
+    for i=1:size(Y, 1)
+       targets(Y(i), i) = 1; 
     end
-    targets = targets';
     T = targets;
 end
 
@@ -106,7 +106,7 @@ end
 %[20 5]
 function [X, T] = loadGlassDataset()
     load Datasets/Glass/glass.data;
-
+   
     inputs = glass(:, 2:size(glass, 2)-1)';
     Y = glass(:, size(glass, 2));
     matrixSize = max(Y);
@@ -176,3 +176,14 @@ function [X, T] = loadParkinsonDataset()
     T = data(:, 28)';
 end
 
+function [X, T] = loadPhishingData()
+    load Datasets\Phishing\PhishingData.txt 
+    X = PhishingData(:, 1:9)';
+    Y = PhishingData(:, 10) + 2;
+    matrixSize = max(Y);
+    targets = zeros(matrixSize, size(Y, 1));
+    for i=1:size(Y, 1)
+       targets(Y(i), i) = 1; 
+    end
+    T = targets;
+end

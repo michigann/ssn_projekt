@@ -1,9 +1,9 @@
-function [best] = StartAlgorithm(algorithm, individual, fitnessFunction, stopConditionFunction)
-    agents=50; % Number of search agents
+function [best] = StartAlgorithm(algorithm, individual, fitnessFunction, iters, stopConditionFunction)
+    agents=100; % Number of search agents
     lb = -1;
     ub = 1;
     dim = length(individual);
-    iters=9999999999; % Maximum number of iterations
+%     iters=100; % Maximum number of iterations
     params = {agents, iters, lb, ub, dim, stopConditionFunction};
     switch algorithm
         case 'cuttlefish'

@@ -11,6 +11,14 @@ classdef PerformanceUtils
                 end
             end
         end
+        
+        function converted = convertResult(result)            
+            converted = zeros(size(result));
+            for i=1:size(result, 2)
+               [maxValue, maxIndex] = max(result(:, i));
+               converted(maxIndex, i) = 1;
+            end
+        end
     
     end
     
