@@ -52,8 +52,8 @@ end
 %[10]
 function [X, T] = loadHTRU2Dataset()
     load Datasets/HTRU_2/HTRU_2.csv
-    X = HTRU_2(:,1:end-1);
-    T = HTRU_2(:,end);
+    X = HTRU_2(:,1:end-1)';
+    T = HTRU_2(:,end)';
 end
 
 %[8]
