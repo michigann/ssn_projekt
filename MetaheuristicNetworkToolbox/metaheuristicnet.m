@@ -67,7 +67,7 @@ classdef metaheuristicnet < handle
           obj.testPerformance = zeros(1, obj.trainParam.epochs);
           
           individual = DataConversionUtils.individualFromWeights(obj);
-          best = StartAlgorithm(obj.trainFcn, individual, @obj.fitness, @obj.stopCondition);
+          best = StartAlgorithm(obj.trainFcn, individual, @obj.fitness, obj.trainParam.epochs, @obj.stopCondition);
           obj = setWeightsFromIndividual(obj, best);
           out = obj;
       end
