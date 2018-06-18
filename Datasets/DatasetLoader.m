@@ -59,7 +59,7 @@ end
 %[8]
 function [X, T] = loadArrhythmiaDataset()
     load arrhythmia;
-    X = [X(:, 1:13) X(:, 16:size(X, 2))]';
+    X = [X(:, 1:11) X(:, 13) X(:, 16:size(X, 2))]';
     matrixSize = max(Y);
     targets = zeros(matrixSize, size(Y, 1));
     for i=1:size(Y, 1)
