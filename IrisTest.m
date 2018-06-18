@@ -9,6 +9,7 @@ metaInit;
 hiddenSizes = 30;
 algorithm = 'grasshopper';
 net = feedforwardnet(hiddenSizes, algorithm);
+
 net.trainParam.epochs = 200;
 net.performFcn = 'mse';
 

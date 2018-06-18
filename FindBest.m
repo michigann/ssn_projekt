@@ -2,12 +2,12 @@ clear;
 
 metaInit;
 
-neurons = { 2 4 6 8 10 12 14 18 20 [2 2] [4 2] [6 2] [8 2] [10 2] [12 2] [14 2] [18 2] [20 2]};
-datasets = { 'votes', 'ovariancancer', 'glass', 'yeast', 'parkinson' };
+% neurons = { 2 4 6 8 10 12 14 18 20 [2 2] [4 2] [6 2] [8 2] [10 2] [12 2] [14 2] [18 2] [20 2]};
+% datasets = { 'votes', 'ovariancancer', 'glass', 'yeast', 'parkinson' };
 
 
-datasets = {'phishing'};
-neurons = { 20 30 40 };
+datasets = {'ionosphere'};
+neurons = { 4 };
 
 
 datasets = {'phishing'};
@@ -41,6 +41,8 @@ for i=1:length(datasets)
            x_train = X(:, tr.trainInd);
            t_train = T(:, tr.trainInd);
            r_train = net(x_train);
+           mse_u = perform(net, r_train, t_train);
+           
            mse_u = perform(net, r_train, t_train);
            
            r_train = DataConversionUtils.convertNetworkResultToClass(r_train);
