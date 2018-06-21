@@ -1,10 +1,11 @@
 classdef metaheuristicnet < handle
-   properties
+    
+  properties
       trainFcn;
       trainParam;
       divideParam;
       performFcn;
-   end
+  end
    
   properties (Access = private)
       net_handle;
@@ -12,15 +13,12 @@ classdef metaheuristicnet < handle
       tr;
       currentTrainX;
       currentTrainT;
+      
       trainPerformance;
       testPerformance;
-      
-%       TODO: przechowywanie najlepszego przystosowania
-      bestWeights;
-      bestError;
   end
   
-  properties (Dependent) %feedforwardnet prop wrappers
+  properties (Dependent) %feedforwardnet prop. wrappers
       %Neural Network
       name;
       userdata;     
@@ -28,8 +26,8 @@ classdef metaheuristicnet < handle
       %dimensions
       numInputs;
       numLayers;
-      
-      
+     
+      %weights
       LW;
       IW;
       b;
@@ -41,6 +39,7 @@ classdef metaheuristicnet < handle
          net.net_handle = feedforwardnet(hiddenSizes);
          net.trainFcn = trainFcn;
          net.name = 'Metaheuristic Neural Network';
+         net.performFcn = 'mse';
          net.trainParam.epochs = 100;
          net.trainParam.goal = 0;
          net.trainParam.show = 1;
@@ -49,7 +48,8 @@ classdef metaheuristicnet < handle
       end  
      
       function out = train(obj, x, t)
-          disp('train to implement');
+          fprintf('\n%s training\n', obj.name);
+          
           obj = configure(obj, x, t);
           obj.currentTrainX = x;
           obj.currentTrainT = t;
@@ -95,7 +95,7 @@ classdef metaheuristicnet < handle
           for i=1:N
               individual = xn(i,:);
               obj = setWeightsFromIndividual(obj, individual);
-              out = obj.net_handle(obj.currentTrainX);
+              out = sim(obj, obj.currentTrainX);
               ft = [ft perform(obj, obj.currentTrainT, out)];
           end
       end
@@ -104,11 +104,11 @@ classdef metaheuristicnet < handle
           obj = setWeightsFromIndividual(obj, bestIndividual);
           
           [x, t] = obj.getTrainSet();
-          out = obj.net_handle(x);
+          out = sim(obj, x);
           trainPerf = perform(obj, t, out);
           
           [x, t] = obj.getTestSet();
-          out = obj.net_handle(x);
+          out = sim(obj, x);
           testPerf = perform(obj, t, out);  
           
           if obj.trainParam.show
@@ -118,14 +118,17 @@ classdef metaheuristicnet < handle
               
               clf;
               hold on;
-              perfs = obj.trainPerformance(1:iter);
-              plot(epochs, perfs);
-              perfs = obj.testPerformance(1:iter);
-              plot(epochs, perfs);
+              trainPerfs = obj.trainPerformance(1:iter);
+              plot(epochs, trainPerfs);
+              testPerfs = obj.testPerformance(1:iter);
+              plot(epochs, testPerfs);
               hold off;
               
               legend('train performance', 'test performance');
               drawnow;
+              
+              fprintf('\nepoch: %d\ntrain %s: %f\ntest %s: %f\n',...
+                  iter, obj.performFcn, testPerf, obj.performFcn, trainPerf);
           end
           
           if (iter >= obj.trainParam.epochs || ...
@@ -142,7 +145,6 @@ classdef metaheuristicnet < handle
           obj.net_handle.IW = weights.IW;
           obj.net_handle.LW = weights.LW;
           obj.net_handle.b = weights.b;
-          %obj.net_handle.LW{2,1}
       end
       
   end
@@ -154,7 +156,7 @@ classdef metaheuristicnet < handle
        end
        
        function out = get.name(obj)
-           out = obj.net_handle.userdata;
+           out = obj.net_handle.name;
        end
        
        function obj = set.userdata(obj, userdata)
@@ -193,7 +195,7 @@ classdef metaheuristicnet < handle
    
    methods %neural network functions wrapers
       
-       function view(obj)
+      function view(obj)
           view(obj.net_handle);
       end
       
@@ -211,22 +213,10 @@ classdef metaheuristicnet < handle
       end
       
       function out = sim(obj,x)
+         x = DataConversionUtils.normData(x);
          out = obj.net_handle(x);
       end
       
    end
-   
-   methods (Access = protected)
-       
-       function propgrp = getPropertyGroups(obj)
-           if ~isscalar(obj)
-               propgrp = getPropertyGroups@matlab.mixin.CustomDisplay(obj, 'prop');
-           else
-               propList = struct('name',obj.name,'userdata',obj.userdata);
-               propgrp = matlab.mixin.util.PropertyGroup(propList);
-           end
-       end
-       
-   end
-   
+ 
 end

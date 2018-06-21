@@ -93,6 +93,10 @@ classdef DataConversionUtils
             end     
         end
         
+        function data = normData(r)
+            data = mapstd(r);
+        end
+        
     end
     
 end
