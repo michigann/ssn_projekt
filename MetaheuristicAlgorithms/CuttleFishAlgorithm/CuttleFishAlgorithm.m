@@ -56,8 +56,7 @@ function BestPosition = CuttleFishAlgorithm(params, fitness)
 
     for t=1:max_iter
         %calculate the average value of the best solution
-        % !!!! which average ? ordinary arithmetic ? !!!!
-        AVBest = 0;%mean(BestPosition);
+        AVBest = 0;
 
         % Case 1 & 2
         G = groupsC{1};
@@ -158,7 +157,6 @@ function BestPosition = CuttleFishAlgorithm(params, fitness)
             end
         end
         if prevMinfit ~= minfit
-             %disp(strcat(num2str(t), ':    ', num2str(minfit, '%10.15e')))
             prevMinfit = minfit;
         end
 
@@ -167,6 +165,5 @@ function BestPosition = CuttleFishAlgorithm(params, fitness)
         end
         
     end
-    % disp(strcat('Best: ', num2str(minfit, '%10.15e')))
 
 end
