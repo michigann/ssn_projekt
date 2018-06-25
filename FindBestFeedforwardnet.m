@@ -1,6 +1,6 @@
 clear;
 
-metaInit;
+MetaInit;
 
 % neurons = { 2 4 6 8 10 12 14 18 20 [2 2] [4 2] [6 2] [8 2] [10 2] [12 2] [14 2] [18 2] [20 2]};
 % datasets = { 'votes', 'ovariancancer', 'glass', 'yeast', 'parkinson' };

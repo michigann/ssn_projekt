@@ -1,15 +1,14 @@
 clear;
 clc;
 
-metaInit;
+MetaInit;
 
-[inputs, targets] = DatasetLoader('yeast');
+[inputs, targets] = DatasetLoader('phishing');
 
 % Run network
-hiddenSizes = 30;
-algorithm = 'grasshopper';
-net = feedforwardnet(hiddenSizes, algorithm);
-
+hiddenSizes = 10;
+algorithm = 'crow';
+net = metaheuristicnet(hiddenSizes, algorithm);
 net.trainParam.epochs = 200;
 net.performFcn = 'mse';
 
